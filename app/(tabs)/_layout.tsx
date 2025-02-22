@@ -3,7 +3,6 @@ import { View, TouchableOpacity, Image, StyleSheet, Animated, Text, Dimensions }
 import { Tabs } from 'expo-router';
 import Colors from '../../constants/Colors'; // Import your color scheme
 import { useColorScheme } from '../../components/useColorScheme';
-import LevelIndicator from '../../components/LevelIndicator'; // Import the LevelIndicator component
 import Profile from '../profile'; // Import the Profile component
 import StackNavigator from '../navigation/StackNavigator'; // Import the StackNavigator
 
@@ -75,9 +74,6 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [popupVisible, setPopupVisible] = useState(false);
 
-  const handleLevelIndicatorPress = () => {
-    setPopupVisible(true);
-  };
 
   const handleClosePopup = () => {
     setPopupVisible(false);
@@ -85,9 +81,6 @@ export default function TabLayout() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Level Indicator */}
-      <LevelIndicator level={1} onPress={handleLevelIndicatorPress} />
-
       {/* Tabs */}
       <Tabs
         screenOptions={{
