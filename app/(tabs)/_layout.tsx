@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Animated, Modal, Text } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, Animated, Text, Dimensions } from 'react-native';
 import { Tabs } from 'expo-router';
 import Colors from '../../constants/Colors'; // Import your color scheme
 import { useColorScheme } from '../../components/useColorScheme';
@@ -72,23 +72,26 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
 
   const handleLevelIndicatorPress = () => {
-    setModalVisible(true);
+    setPopupVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setModalVisible(false);
+  const handleClosePopup = () => {
+    setPopupVisible(false);
   };
 
   return (
     <View style={{ flex: 1 }}>
+      {/* Level Indicator */}
       <LevelIndicator level={1} onPress={handleLevelIndicatorPress} />
+
+      {/* Tabs */}
       <Tabs
         screenOptions={{
           // Remove default header
-          headerShown: false
+          headerShown: false,
         }}
         tabBar={(props) => <CustomTabBar {...props} />} // Use the custom tab bar
       >
@@ -97,21 +100,30 @@ export default function TabLayout() {
         <Tabs.Screen name="index" options={{ title: 'Profile' }} />
         <Tabs.Screen name="three" options={{ title: 'Settings' }} />
       </Tabs>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Profile />
-            <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-              <Text style={styles.closeButtonText}>Close</Text>
+
+      {/* Popup Overlay */}
+      {popupVisible && (
+        <View style={styles.popupOverlay}>
+          <View style={styles.popupContent}>
+            {/* Close Button */}
+            <TouchableOpacity style={styles.closeButton} onPress={handleClosePopup}>
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
+            {/* Pass necessary props to the Profile component */}
+            <Profile
+              username="JohnDoe" // Example username
+              postsCount={10} // Example posts count
+              level={5} // Example level
+              tasks={[
+                { id: '1', title: 'Task 1', completed: false },
+                { id: '2', title: 'Task 2', completed: true },
+                { id: '3', title: 'Task 3', completed: false },
+              ]}
+              onClose={handleClosePopup} // Pass the close function
+            />
           </View>
         </View>
-      </Modal>
+      )}
     </View>
   );
 }
@@ -119,11 +131,11 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#bcf9b8', // Or Colors[colorScheme ?? 'light'].background
+    backgroundColor: Colors.pastelGreen, // Or Colors[colorScheme ?? 'light'].background
     paddingVertical: 10,
     justifyContent: 'space-around', // Distribute buttons evenly
     borderTopWidth: 1,
-    borderTopColor: '#ccc' // Example border color
+    borderTopColor: '#ccc', // Example border color
   },
   tabButtonContainer: {
     backgroundColor: '#92ee8c', // Background color for the hard circle
@@ -164,24 +176,31 @@ const styles = StyleSheet.create({
   tabButtonImageActive: {
     // No tintColor to avoid solid color overlay
   },
-  modalContainer: {
-    flex: 1,
+  popupOverlay: {
+    position: 'absolute',
+    top: 205, // Start the popup below the top 205 pixels
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
   },
-  modalContent: {
-    width: '80%',
-    backgroundColor: 'white',
+  popupContent: {
+    width: '90%', // Slightly wider for better usability
+    backgroundColor: Colors.pastelGreen,
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
+    maxHeight: '80%', // Ensure the popup content does not exceed the screen height
   },
   closeButton: {
-    marginTop: 20,
+    position: 'absolute',
+    top: 10,
+    right: 10,
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
+    zIndex: 1, // Ensure the close button is on top
   },
   closeButtonText: {
     color: 'white',

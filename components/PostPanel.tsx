@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Modal } from 'react-native';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import AddComment from './AddComment'; // Import the AddComment component
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,6 +19,7 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
   const [likesCount, setLikesCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [sharesCount, setSharesCount] = useState(0);
+  const [commentModalVisible, setCommentModalVisible] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -26,7 +28,11 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
   };
 
   const handleComment = () => {
-    // TODO: Implement backend call to add a comment
+    setCommentModalVisible(true);
+  };
+
+  const handleCloseCommentModal = () => {
+    setCommentModalVisible(false);
   };
 
   const handleShare = () => {
@@ -76,6 +82,15 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
           </View>
         </View>
       </TouchableOpacity>
+
+      {/* Add Comment Modal */}
+      <Modal visible={commentModalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <AddComment visible={commentModalVisible} onAddComment={() => {}} onClose={handleCloseCommentModal} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -193,6 +208,20 @@ const styles = StyleSheet.create({
   taskText: {
     fontSize: 16,
     color: '#333',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    padding: 20,
+    maxHeight: '80%', // Ensure the modal content does not exceed the screen height
+    position: 'relative', // Ensure the close button is positioned relative to this container
   },
 });
 
