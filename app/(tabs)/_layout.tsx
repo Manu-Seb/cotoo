@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors'; // Import your color scheme
 import { useColorScheme } from '../../components/useColorScheme';
 import LevelIndicator from '../../components/LevelIndicator'; // Import the LevelIndicator component
 import Profile from '../profile'; // Import the Profile component
+import StackNavigator from '../navigation/StackNavigator'; // Import the StackNavigator
 
 // Import your images
 import duckyIcon from '../../assets/images/ducky.png';
@@ -100,6 +101,8 @@ export default function TabLayout() {
         <Tabs.Screen name="index" options={{ title: 'Profile' }} />
         <Tabs.Screen name="three" options={{ title: 'Settings' }} />
       </Tabs>
+
+      {/* Stack Navigator */}
 
       {/* Popup Overlay */}
       {popupVisible && (

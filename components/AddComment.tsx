@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ViewStyle } from 'react-native';
 import Colors from '../constants/Colors';
 
 interface AddCommentProps {
-    visible: boolean;
     onClose: () => void;
     onAddComment: (comment: string) => void;
+    style?: ViewStyle;
 }
 
-const AddComment: React.FC<AddCommentProps> = ({ visible, onClose, onAddComment }) => {
+const AddComment: React.FC<AddCommentProps> = ({ onClose, onAddComment, style }) => {
     const [comment, setComment] = useState('');
 
     const handleAddComment = () => {
@@ -22,35 +22,25 @@ const AddComment: React.FC<AddCommentProps> = ({ visible, onClose, onAddComment 
     };
 
     return (
-        <Modal visible={visible} animationType="slide" transparent={true}>
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.title}>Comments</Text>
-                    <TextInput
-                        style={styles.input}
-                        multiline
-                        numberOfLines={4}
-                        maxLength={500}
-                        value={comment}
-                        onChangeText={setComment}
-                        placeholder="Write your comment here..."
-                    />
-                    <Button title="Add Comment" onPress={handleAddComment} color={Colors.pastelYellow} />
-                </View>
-            </View>
-        </Modal>
+        <View style={[styles.container, style]}>
+            <Text style={styles.title}>Comments</Text>
+            <TextInput
+                style={styles.input}
+                multiline
+                numberOfLines={4}
+                maxLength={500}
+                value={comment}
+                onChangeText={setComment}
+                placeholder="Write your comment here..."
+            />
+            <Button title="Add Comment" onPress={handleAddComment} color={Colors.pastelYellow} />
+            <Button title="Close" onPress={onClose} color="red" />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-        width: '80%',
+    container: {
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,

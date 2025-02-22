@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Modal } from 'react-native';
+import { router } from 'expo-router'; // Use Expo Router's router
 import Colors from '../constants/Colors';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import FontAwesome from '@expo/vector-icons/FontAwesome'; // Use Expo's FontAwesome
 import AddComment from './AddComment'; // Import the AddComment component
 
 const screenWidth = Dimensions.get('window').width;
@@ -12,12 +13,13 @@ interface PostPanelProps {
   image?: any; // Optional image prop, can be a number when using require
   username: string;
   createdTime: Date; // Created time as a Date object
+  comments?: Array<{ id: number; username: string; content: string }>; // Optional comments array
+  commentsCount?: number; // Optional comments count
 }
 
-const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, createdTime }) => {
+const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, createdTime, comments, commentsCount }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
-  const [commentsCount, setCommentsCount] = useState(0);
   const [sharesCount, setSharesCount] = useState(0);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
 
@@ -32,6 +34,7 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
   };
 
   const handleCloseCommentModal = () => {
+    console.log("comment visible");
     setCommentModalVisible(false);
   };
 
@@ -43,9 +46,27 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
   // Calculate hours ago
   const hoursAgo = Math.floor((new Date().getTime() - createdTime.getTime()) / (1000 * 60 * 60));
 
+  const handleTaskItemPress = () => {
+    // Navigate to the showComments screen using Expo Router
+    router.push({
+      pathname: '/showComments',
+      params: {
+        post: JSON.stringify({
+          title,
+          content,
+          image,
+          username,
+          createdTime,
+          comments: comments || [], // Pass comments if available, otherwise an empty array
+          commentsCount: commentsCount || 0, // Pass commentsCount if available, otherwise 0
+        }),
+      },
+    });
+  };
+
   return (
     <View style={styles.outerPanel}>
-      <TouchableOpacity style={styles.taskItem} onPress={handleComment}>
+      <TouchableOpacity style={styles.taskItem} onPress={handleTaskItemPress}>
         <View style={styles.panel}>
           <View style={styles.contentContainer}>
             <View style={styles.header}>
@@ -67,15 +88,15 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
             </View>
             <View style={styles.actions}>
               <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-                <Icon name={isLiked ? 'thumbs-up' : 'thumbs-o-up'} size={20} color="#000" />
+                <FontAwesome name={isLiked ? 'thumbs-up' : 'thumbs-o-up'} size={20} color="#000" />
                 <Text style={styles.actionText}> ({likesCount})</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={handleComment}>
-                <Icon name="comment-o" size={20} color="#000" />
-                <Text style={styles.actionText}> ({commentsCount})</Text>
+              <TouchableOpacity style={styles.actionButton} onPress={handleTaskItemPress}>
+                <FontAwesome name="comment-o" size={20} color="#000" />
+                <Text style={styles.actionText}> ({comments?.length || commentsCount || 0})</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-                <Icon name="share" size={20} color="#000" />
+                <FontAwesome name="share" size={20} color="#000" />
                 <Text style={styles.actionText}> ({sharesCount})</Text>
               </TouchableOpacity>
             </View>
@@ -87,7 +108,7 @@ const PostPanel: React.FC<PostPanelProps> = ({ title, content, image, username, 
       <Modal visible={commentModalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <AddComment visible={commentModalVisible} onAddComment={() => {}} onClose={handleCloseCommentModal} />
+            <AddComment onAddComment={() => {}} onClose={handleCloseCommentModal} />
           </View>
         </View>
       </Modal>

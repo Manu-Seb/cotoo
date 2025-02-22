@@ -22,15 +22,129 @@ export default function TabTwoScreen() {
       <View style={styles.separator} />
       <ScrollView contentContainerStyle={styles.outerContainer}>
         <Text style={styles.tasksText}>Community</Text>
-        <PostPanel title="Post Title 1" content="This is the content of post 1." username="User1" createdTime={new Date(Date.now() - 3600000)} />
-        <PostPanel title="Post Title 2" content="This is the content of post 2." username="User2" createdTime={new Date(Date.now() - 7200000)} />
-        <PostPanel title="Post Title 3" content="This is the content of post 3." username="User3" createdTime={new Date(Date.now() - 10800000)} />
-        <PostPanel title="Post Title 4" content="This is the content of post 4." username="User4" createdTime={new Date(Date.now() - 14400000)} />
-        <PostPanel title="Post Title 5" content="This is the content of post 5." username="User5" createdTime={new Date(Date.now() - 18000000)} />
-        <PostPanel title="Post Title 6" content="This is the content of post 6." username="User6" createdTime={new Date(Date.now() - 21600000)} />
-        <PostPanel title="Post Title 7" content="This is the content of post 7." username="User7" createdTime={new Date(Date.now() - 25200000)} />
-        <PostPanel title="Post Title 8" content="This is the content of post 8." image={require('../../assets/images/ducky.png')} username="User8" createdTime={new Date(Date.now() - 28800000)} />
-        <PostPanel title="Post Title 9" content="This is the content of post 9." image={require('../../assets/images/ducky.png')} username="User9" createdTime={new Date(Date.now() - 32400000)} />
+
+        {/* Post 1 */}
+        <PostPanel
+          title="Post Title 1"
+          content="This is the content of post 1."
+          username="User1"
+          createdTime={new Date(Date.now() - 3600000)}
+          comments={[
+            {
+              id: 1,
+              username: 'Commenter1',
+              content: 'This is a comment on post 1.',
+            },
+            {
+              id: 2,
+              username: 'Commenter2',
+              content: 'Another comment on post 1.',
+            },
+          ]}
+        />
+
+        {/* Post 2 */}
+        <PostPanel
+          title="Post Title 2"
+          content="This is the content of post 2."
+          username="User2"
+          createdTime={new Date(Date.now() - 7200000)}
+          comments={[
+            {
+              id: 1,
+              username: 'Commenter1',
+              content: 'This is a comment on post 2.',
+            },
+          ]}
+        />
+
+        {/* Post 3 */}
+        <PostPanel
+          title="Post Title 3"
+          content="This is the content of post 3."
+          username="User3"
+          createdTime={new Date(Date.now() - 10800000)}
+          comments={[]} // No comments for this post
+        />
+
+        {/* Post 4 */}
+        <PostPanel
+          title="Post Title 4"
+          content="This is the content of post 4."
+          username="User4"
+          createdTime={new Date(Date.now() - 14400000)}
+          commentsCount={3} // Only comments count is provided
+        />
+
+        {/* Post 5 */}
+        <PostPanel
+          title="Post Title 5"
+          content="This is the content of post 5."
+          username="User5"
+          createdTime={new Date(Date.now() - 18000000)}
+          comments={[
+            {
+              id: 1,
+              username: 'Commenter1',
+              content: 'This is a comment on post 5.',
+            },
+          ]}
+        />
+
+        {/* Post 6 */}
+        <PostPanel
+          title="Post Title 6"
+          content="This is the content of post 6."
+          username="User6"
+          createdTime={new Date(Date.now() - 21600000)}
+          comments={[
+            {
+              id: 1,
+              username: 'Commenter1',
+              content: 'This is a comment on post 6.',
+            },
+            {
+              id: 2,
+              username: 'Commenter2',
+              content: 'Another comment on post 6.',
+            },
+          ]}
+        />
+
+        {/* Post 7 */}
+        <PostPanel
+          title="Post Title 7"
+          content="This is the content of post 7."
+          username="User7"
+          createdTime={new Date(Date.now() - 25200000)}
+          comments={[]} // No comments for this post
+        />
+
+        {/* Post 8 */}
+        <PostPanel
+          title="Post Title 8"
+          content="This is the content of post 8."
+          username="User8"
+          createdTime={new Date(Date.now() - 28800000)}
+          image={require('../../assets/images/ducky.png')}
+          comments={[
+            {
+              id: 1,
+              username: 'Commenter1',
+              content: 'This is a comment on post 8.',
+            },
+          ]}
+        />
+
+        {/* Post 9 */}
+        <PostPanel
+          title="Post Title 9"
+          content="This is the content of post 9."
+          username="User9"
+          createdTime={new Date(Date.now() - 32400000)}
+          image={require('../../assets/images/ducky.png')}
+          commentsCount={2} // Only comments count is provided
+        />
       </ScrollView>
 
       {/* Floating Action Button */}
