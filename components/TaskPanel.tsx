@@ -5,11 +5,19 @@ import Colors from '../constants/Colors';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-interface TaskPanelProps {
-  style?: object;
+interface Task {
+  id: string;
+  title: string;
+  completed: boolean;
 }
 
-const TaskPanel: React.FC<TaskPanelProps> = ({ style }) => {
+interface TaskPanelProps {
+  style?: object;
+  tasks: Task[]; // Array of tasks
+  onTaskComplete?: (taskId: string) => void; // Callback when a task is completed
+}
+
+const TaskPanel: React.FC<TaskPanelProps> = ({ style, tasks, onTaskComplete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const heightAnim = useRef(new Animated.Value(200)).current; // Initial height of the outer container
 
@@ -22,6 +30,12 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ style }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleTaskPress = (taskId: string) => {
+    if (onTaskComplete) {
+      onTaskComplete(taskId); // Notify parent component that the task is completed
+    }
+  };
+
   return (
     <Animated.View style={[styles.outerContainer, style, { height: heightAnim }]}>
       <TouchableOpacity onPress={handlePress} style={styles.touchable}>
@@ -32,13 +46,18 @@ const TaskPanel: React.FC<TaskPanelProps> = ({ style }) => {
           {/* You can add an image or other content here if needed */}
         </View>
         <View style={styles.content}>
-          <TouchableOpacity style={styles.taskItem} onPress={handlePress}>
-            <View style={styles.taskCircle}>
-              {isExpanded && <View style={styles.taskCheckmark} />}
-            </View>
-            <Text style={styles.taskText}>Plant a tree!</Text>
-          </TouchableOpacity>
-          {/* Add more Task items here */}
+          {tasks.map((task) => (
+            <TouchableOpacity
+              key={task.id}
+              style={styles.taskItem}
+              onPress={() => handleTaskPress(task.id)}
+            >
+              <View style={styles.taskCircle}>
+                {task.completed && <View style={styles.taskCheckmark} />}
+              </View>
+              <Text style={styles.taskText}>{task.title}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     </Animated.View>

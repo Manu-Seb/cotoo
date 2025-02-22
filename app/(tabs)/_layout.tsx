@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router';
 import Colors from '../../constants/Colors'; // Import your color scheme
 import { useColorScheme } from '../../components/useColorScheme';
 import Profile from '../profile'; // Import the Profile component
-import StackNavigator from '../navigation/StackNavigator'; // Import the StackNavigator
+ // Import the StackNavigator
 
 // Import your images
 import duckyIcon from '../../assets/images/ducky.png';

@@ -9,8 +9,9 @@ import { useColorScheme } from '@/components/useColorScheme';
 
 export { ErrorBoundary } from 'expo-router';
 
+// Set the initial route to '(auth)'
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  initialRouteName: '(auth)', // Changed from '(tabs)' to '(auth)'
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -40,10 +41,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  console.log("root layoutee");
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        {/* Auth group (login and signup) */}
+        <Stack.Screen
+          name="(auth)"
+          options={{ headerShown: false }} // Hide the header for the auth group
+        />
+
         {/* Home screen (from the (tabs) group) */}
         <Stack.Screen
           name="(tabs)"
