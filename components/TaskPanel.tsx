@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, ScrollView } from 'react-native';
 import Colors from '../constants/Colors';
 
 const screenWidth = Dimensions.get('window').width;
@@ -7,7 +7,7 @@ const screenHeight = Dimensions.get('window').height;
 
 interface Task {
   id: string;
-  title: string;
+  content: string;
   completed: boolean;
 }
 
@@ -18,49 +18,54 @@ interface TaskPanelProps {
 }
 
 const TaskPanel: React.FC<TaskPanelProps> = ({ style, tasks, onTaskComplete }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const heightAnim = useRef(new Animated.Value(200)).current; // Initial height of the outer container
+  const [isExpanded, setIsExpanded] = useState(false); // Track if the panel is expanded
+  const contentHeightAnim = useRef(new Animated.Value(100)).current; // Initial height for minimized view (increased to 100)
 
   const handlePress = () => {
-    Animated.timing(heightAnim, {
-      toValue: isExpanded ? 200 : screenHeight / 2, // Toggle between initial height and half the screen height
-      duration: 300, // Duration of the animation
+    Animated.timing(contentHeightAnim, {
+      toValue: isExpanded ? 100 : screenHeight * 0.5, // Toggle between minimized (100) and expanded height
+      duration: 300,
       useNativeDriver: false,
     }).start();
-    setIsExpanded(!isExpanded);
+    setIsExpanded(!isExpanded); // Toggle expanded state
   };
 
-  const handleTaskPress = (taskId: string) => {
+  const handleTaskComplete = (taskId: string) => {
     if (onTaskComplete) {
       onTaskComplete(taskId); // Notify parent component that the task is completed
     }
   };
 
   return (
-    <Animated.View style={[styles.outerContainer, style, { height: heightAnim }]}>
+    <View style={[styles.outerContainer, style]}>
       <TouchableOpacity onPress={handlePress} style={styles.touchable}>
         <Text style={styles.tasksText}>Tasks</Text>
       </TouchableOpacity>
-      <View style={styles.panel}>
-        <View style={styles.header}>
-          {/* You can add an image or other content here if needed */}
-        </View>
-        <View style={styles.content}>
-          {tasks.map((task) => (
-            <TouchableOpacity
-              key={task.id}
-              style={styles.taskItem}
-              onPress={() => handleTaskPress(task.id)}
-            >
-              <View style={styles.taskCircle}>
-                {task.completed && <View style={styles.taskCheckmark} />}
-              </View>
-              <Text style={styles.taskText}>{task.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </Animated.View>
+      <Animated.View style={[styles.panel, { height: contentHeightAnim }]}>
+        {tasks.length === 0 ? ( // Check if there are no tasks
+          <View style={styles.noTasksContainer}>
+            <Text style={styles.noTasksText}>No more tasks!</Text>
+          </View>
+        ) : (
+          <ScrollView contentContainerStyle={styles.content}>
+            {tasks.slice(0, isExpanded ? tasks.length : 1).map((task) => (
+              <TouchableOpacity
+                key={task.id}
+                style={styles.taskItem}
+                onPress={() => handleTaskComplete(task.id)}
+              >
+                <View style={styles.taskCircle}>
+                  {task.completed && <View style={styles.taskCheckmark} />}
+                </View>
+                <View style={styles.taskTextContainer}>
+                  <Text style={styles.taskText}>{task.content}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+      </Animated.View>
+    </View>
   );
 };
 
@@ -87,20 +92,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     width: screenWidth * 0.8, // Set width to 80% of the screen width
     marginBottom: 15,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Align items on opposite ends
-    alignItems: 'center', // Vertically center items
-    marginBottom: 10, // Space between header and content
-  },
-  levelText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333', // Example color
+    overflow: 'hidden', // Ensure content doesn't overflow
   },
   content: {
-    // Styles for the content area
+    flexGrow: 1, // Allow content to grow
   },
   tasksText: {
     fontSize: 20,
@@ -129,9 +124,21 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: '#000', // Example checkmark color
   },
+  taskTextContainer: {
+    flex: 1, // Take up remaining space
+  },
   taskText: {
     fontSize: 16,
-    color: '#333',
+    color: '#333', // Ensure text color is visible
+  },
+  noTasksContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noTasksText: {
+    fontSize: 16,
+    color: '#666', // Subtle color for the "No more tasks" message
   },
 });
 

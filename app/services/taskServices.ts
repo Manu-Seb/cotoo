@@ -1,40 +1,42 @@
 import api from './api'; // Import the configured axios instance
 
-// Fetch Daily Task
-const fetchDailyTask = async () => {
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+}
+
+interface UserTask {
+  id: string;
+  userId: string;
+  taskId: Task;
+  date: string;
+  completed: boolean;
+}
+
+// Fetch today's random task for a user
+export const fetchDailyTask = async (userId: string): Promise<Task> => {
   try {
-    const response = await api.get('/community/daily');
-    return response.data; // { taskId, date, participants }
+    const response = await api.get('/tasks/daily', { params: { userId } });
+    return response.data; // Returns the task object
   } catch (error) {
     console.error('Error fetching daily task:', error);
     throw error;
   }
 };
 
-// Mark Task as Completed
-const completeCommunityTask = async (userId:string) => {
+// Mark a task as complete
+export const completeTask = async (userId: string, taskId: string): Promise<{ message: string; taskId: string }> => {
   try {
-    const response = await api.post('/community/complete', { userId });
-    return response.data; // { message, totalParticipants }
+    const response = await api.post('/tasks/complete', { userId, taskId });
+    return response.data; // Returns success message and taskId
   } catch (error) {
     console.error('Error completing task:', error);
     throw error;
   }
 };
 
-// Fetch Milestone Progress
-const fetchMilestoneProgress = async () => {
-  try {
-    const response = await api.get('/community/milestone');
-    return response.data; // { message, totalParticipants, milestonesReached }
-  } catch (error) {
-    console.error('Error fetching milestone progress:', error);
-    throw error;
-  }
-};
-
 export default {
   fetchDailyTask,
-  completeCommunityTask,
-  fetchMilestoneProgress,
+  completeTask,
 };
