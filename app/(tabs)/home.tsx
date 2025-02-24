@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import Colors from '../../constants/Colors';
 import TaskPanel from '../../components/TaskPanel';
 import { Text, View } from '@/components/Themed';
 import VirtualPet from '@/components/Character';
+import { fetchDailyTask } from '../services/taskServices';
 
 interface Task {
   id: string;

@@ -1,31 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '../../constants/Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = () => {
-    // Basic check: if email and password are not empty, navigate to (tabs)/index
+  useEffect(() => {
+    console.log("Login component mounted"); // Log when the component mounts
+    setEmail('');
+    setPassword('');
+  }, []);
+
+  const handleLogin = async () => {
+    console.log("Login button pressed"); // Log when the login button is pressed
+
     if (email.trim() && password.trim()) {
-      router.replace('/(tabs)/index'); // Replace the current route with (tabs)/index
+      console.log("Email and password entered"); // Log if email and password are entered
+
+      try {
+        console.log("Attempting to store token"); // Log before storing the token
+        await AsyncStorage.setItem('token', 'some_token'); // Store token (replace with actual token)
+        console.log("Token stored successfully"); // Log after successful token storage
+        console.log("Navigating to tabs/index"); // Log before navigation
+        router.replace('(tabs)/home'); // Use replace here!
+      } catch (error) {
+        console.error("Login error:", error); // Log any error during login
+        alert('Login failed. Please try again.');
+      }
     } else {
-      alert('Please enter both email and password.'); // Simple validation
+      console.log("Email or password missing"); // Log if email or password is missing
+      alert('Please enter both email and password.');
     }
   };
 
   const handleCreateAccount = () => {
-    router.push('/(auth)/signup'); // Navigate to a signup page (you can create this later)
+    console.log("Create account button pressed"); // Log when create account is pressed
+    router.push('/(auth)/signup');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      {/* Email Input */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -36,7 +56,6 @@ export default function Login() {
         placeholderTextColor="#888"
       />
 
-      {/* Password Input */}
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -47,12 +66,10 @@ export default function Login() {
         placeholderTextColor="#888"
       />
 
-      {/* Login Button */}
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* Create Account Button */}
       <TouchableOpacity onPress={handleCreateAccount}>
         <Text style={styles.createAccountText}>Create an Account</Text>
       </TouchableOpacity>
@@ -76,7 +93,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: Colors.brighterPastelGreen, // Brighter pastel green for borders
+    borderColor: Colors.brightPastelGreen, // Brighter pastel green for borders
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 16,
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
     color: '#333', // Dark text for readability
   },
   loginButton: {
-    backgroundColor: Colors.brighterPastelGreen, // Brighter pastel green for the button
+    backgroundColor: Colors.brightPastelGreen, // Brighter pastel green for the button
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',

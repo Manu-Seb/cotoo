@@ -19,11 +19,7 @@ export default function VirtualPet() {
 
       {/* Animated Pet */}
       <Image source={petGifs[mood]} style={{ width: 200, height: 200 }} contentFit="cover" />
-
-      {/* Interaction Buttons */}
-      <Button title="Happy" onPress={() => setMood("happy")} />
-      <Button title="Sleepy" onPress={() => setMood("sleepy")} />
-      <Button title="Sad" onPress={() => setMood("sad")} />
+      
     </View>
   );
 }
