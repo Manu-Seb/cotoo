@@ -26,7 +26,7 @@ export default function Login() {
         await AsyncStorage.setItem('token', 'some_token'); // Store token (replace with actual token)
         console.log("Token stored successfully"); // Log after successful token storage
         console.log("Navigating to tabs/index"); // Log before navigation
-        router.replace('(tabs)/home'); // Use replace here!
+        router.replace('/(tabs)/home'); // Use replace here!
       } catch (error) {
         console.error("Login error:", error); // Log any error during login
         alert('Login failed. Please try again.');

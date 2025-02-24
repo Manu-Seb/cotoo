@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Animated } from 'react-native';
 import Colors from '../constants/Colors'; // Import your color scheme
-import { useColorScheme } from '../components/useColorScheme'; // If you're using a color scheme
+import { useColorScheme } from './useColorScheme'; // If you're using a color scheme
 import duckyIcon from '../assets/images/ducky.png'; // Update paths if needed
 import graphIcon from '../assets/images/graph.png';
 import communityIcon from '../assets/images/community.png';

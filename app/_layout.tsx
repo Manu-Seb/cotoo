@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from '@/components/useColorScheme'; // Adjust path if needed
+import { useColorScheme } from '@/components/useColorScheme';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -16,11 +16,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'), // Adjust path if needed
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState(null); // Initialize to null
-  const [hasMounted, setHasMounted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Explicitly type as boolean or null
   const router = useRouter();
   const colorScheme = useColorScheme();
 
@@ -29,30 +28,30 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    setHasMounted(true); // Set hasMounted after initial render
-  }, []);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('token');
-      setIsLoggedIn(!!token);
-    };
-    checkAuth();
-  }, [hasMounted]); // Add hasMounted as a dependency
-
-  useEffect(() => {
-    if (hasMounted && isLoggedIn) { // Check hasMounted *before* navigating
-      router.replace('(tabs)');
-    } else if (hasMounted && isLoggedIn === false) {
-      router.replace('(auth)');
-    }
-  }, [hasMounted, isLoggedIn]); // Add hasMounted and isLoggedIn as a dependency
-
-  useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        setIsLoggedIn(!!token); // Now correct because isLoggedIn is boolean | null
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        setIsLoggedIn(false); // Handle potential errors and default to logged out
+      }
+    };
+
+    checkAuth();
+  }, []); // Remove hasMounted dependency; the checkAuth should run only once on mount
+
+  useEffect(() => {
+    if (isLoggedIn !== null) { // Only navigate when isLoggedIn is determined
+      router.replace(isLoggedIn ? '/(tabs)/home' : '/(auth)');
+    }
+  }, [isLoggedIn, router]); // Add router to the dependency array
 
   if (isLoggedIn === null) {
     return null; // Or a loading indicator
@@ -60,14 +59,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        {isLoggedIn ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        )}
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* REMOVE these Stack.Screen components for (auth) and (tabs) */}
+        {/* These should be defined within your (auth) and (tabs) layouts */}
         <Stack.Screen name="showComments" options={{ headerShown: false }} />
-        <Stack.Screen name="userProfile" options={{ headerShown: true }} />
+        <Stack.Screen name="userProfile" options={{ headerShown: true }} /> 
       </Stack>
     </ThemeProvider>
   );

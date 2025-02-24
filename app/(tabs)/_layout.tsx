@@ -5,7 +5,7 @@ export default function TabLayout() {
   console.log("Tabs Layout Rendered");
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false }} // Hide headers for all tabs
       tabBar={(props) => <CustomTabBar {...props} />}
     >
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />

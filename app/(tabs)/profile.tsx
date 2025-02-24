@@ -14,7 +14,7 @@ export default function TabTwoScreen() {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('token');
-      router.replace('(auth)');
+      router.replace('/(auth)');
     } catch (error) {
       console.error("Logout error:", error);
       // Handle the error (e.g., display an alert)
